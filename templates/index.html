@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Health Report Analyzer{% endblock %}
+
+{% block content %}
+    <div class="content homepage">
+        <h2>Going beyond just proteins and carbs</h2>
+        <p>The spotlight is often on carbs and protein, while other crucial nutritional needs are left in the shadows...</p>
+        <button onclick="document.getElementById('fileInput').click();" class="upload-button">Upload Health Report</button>
+        <input type="file" id="fileInput" style="display: none;" accept=".pdf">
+        <div id="fileStatus" class="file-status"></div>
+    </div>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const fileStatus = document.getElementById('fileStatus');
+
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size exceeds 5MB limit. Please upload a smaller file.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('pdfFile', file);
+
+            // Display file name and upload status
+            fileStatus.innerHTML = `<p>Uploading: ${file.name}</p>`;
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(errorMessage => {
+                        throw new Error(`File upload failed. Server returned status: ${response.status}. Message: ${errorMessage}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                localStorage.setItem('comparisonResults', JSON.stringify(data));
+                window.location.href = '/response';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                fileStatus.innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
+            });
+        }
+
+        // Automatically trigger the file upload when a file is selected
+        document.getElementById('fileInput').addEventListener('change', uploadFile);
+    </script>
+{% endblock %}

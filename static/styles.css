@@ -1,0 +1,261 @@
+/* Importing the Josefin Sans font */
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap');
+
+/* Base styling variables */
+:root {
+    --primary-color: #333333;  /* Dark grey for text */
+    --secondary-color: #B1A7A6; /* Beige-grey for accents */
+    --accent-color: #F4ECE8; /* Tan beige cream background */
+    --text-color: #333333; /* General text color */
+    --font-family: 'Josefin Sans', sans-serif;
+}
+
+/* General body styling */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+/* Banner styling */
+.banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--accent-color);
+    padding: 8px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #ccc;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: var(--secondary-color);
+}
+
+/* Homepage layout */
+.container.homepage {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 80px;
+    padding: 20px;
+}
+
+.content {
+    width: 50%;
+}
+
+.image-section {
+    width: 45%;
+    text-align: right;
+}
+/* Flexbox for logo and text alignment */
+.logo {
+    display: flex;
+    align-items: center;  /* Vertically align the logo and text */
+}
+
+.logo-image {
+    width: 35px;  /* Adjust the size of the logo */
+    height: auto;
+    margin-right: 10px;  /* Add space between logo and text */
+}
+
+
+.homepage-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Upload button with black background and white text */
+.upload-button {
+    padding: 10px 20px;
+    background-color: black;  /* Black background */
+    color: white;  /* White text */
+    border: none;
+    text-transform: uppercase;  /* Text in capitals */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    padding: 5px;
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+/* Vegetable selection page */
+.vegetable-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.vegetable-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+}
+
+.vegetable-item img {
+    width: 100px;
+    height: auto;
+}
+
+.vegetable-item h3 {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.vegetable-item p {
+    font-size: 0.9rem;
+}
+
+/* Weekly food plan page */
+.food-plan ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.food-plan ul li {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Flexbox container to position table and details side by side */
+/* Container for the food plan button */
+.start-food-plan-container {
+    text-align: center;  /* Center the button */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Round button styling */
+.round-button {
+    background-color: #4CAF50;  /* Green background */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 50%;  /* Makes the button round */
+    cursor: pointer;
+    text-decoration: none;  /* Remove underline */
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.round-button:hover {
+    background-color: #45a049;  /* Darker green on hover */
+}
+
+/* Styling for the table and parameter details to ensure there's space between them */
+.results-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;  /* Space between the table and details */
+    margin-top: 20px;
+}
+
+
+/* Ensure the results table and parameter details take up appropriate space */
+.results-table {
+    flex: 1;
+}
+
+.parameter-details {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.parameter-details h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.parameter-details ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.parameter-details ul li {
+    margin-bottom: 5px;
+}
+
+/* Styling for the parameter table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container.homepage {
+        flex-direction: column;
+    }
+
+    .image-section {
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .content {
+        width: 100%;
+    }
+}

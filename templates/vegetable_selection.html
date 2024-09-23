@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Foods</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Select Foods for Your Nutrient Deficiencies</h1>
+
+    <form method="POST" action="/submit_food_plan">
+        <h2>Compulsory Foods</h2>
+
+        {% for nutrient, foods in compulsory_vegetables.items() %}
+            <h3>{{ nutrient }}</h3>
+            <ul>
+                {% for food in foods %}
+                <li>
+                    <input type="checkbox" name="vegetables" value="{{ food }}" id="{{ food }}">
+                    <label for="{{ food }}">{{ food }}</label>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+
+        <h2>Optional Foods</h2>
+        <p>No optional foods listed for now.</p>
+
+        <button type="submit">Submit and Generate Food Plan</button>
+    </form>
+</body>
+</html>

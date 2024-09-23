@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Health Report Results{% endblock %}
+
+{% block content %}
+    <h2>Health Parameters Analysis</h2>
+
+    <!-- Form to manually enter Age, Gender, Weight, and Activity Level -->
+    <div class="user-info-form">
+        <form method="POST" action="#">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" placeholder="Enter your age" required><br>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select><br>
+
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" name="weight" placeholder="Enter your weight" required><br>
+
+            <label for="activity-level">Activity Level:</label>
+            <select id="activity-level" name="activity-level" required>
+                <option value="Sedentary">Sedentary</option>
+                <option value="Light">Light</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Active">Active</option>
+                <option value="Very Active">Very Active</option>
+            </select><br>
+
+            <input type="submit" value="Submit Info">
+        </form>
+    </div>
+
+    <!-- Button to start making the food plan -->
+    <div class="start-food-plan-container">
+        <a href="/vegetable_selection" class="round-button">Start Making Food Plan</a>
+    </div>
+
+    <!-- Flexbox container to hold the table and parameter details side by side -->
+    <div class="results-container">
+        <!-- Parameter Table -->
+        <div id="results" class="results-table">
+            <!-- The parameters table will be dynamically updated by script.js -->
+        </div>
+
+        <!-- Parameter Details Section -->
+        <div id="parameter-details" class="parameter-details">
+            <h3 id="parameter-name-heading">Hover over a parameter to see details</h3>
+            <div>
+                <h4>Causes</h4>
+                <ul id="causes-list"></ul>
+            </div>
+            <div>
+                <h4>Effects</h4>
+                <ul id="effects-list"></ul>
+            </div>
+            <div>
+                <h4>How to Avoid</h4>
+                <ul id="avoids-list"></ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

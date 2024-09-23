@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Food Plan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Your Weekly Food Plan</h1>
+
+    <ul>
+        {% for day, food in food_plan.items() %}
+        <li>{{ day }}: {{ food }}</li>
+        {% endfor %}
+    </ul>
+
+    <p>Ensure to consume these foods regularly to cover your nutrient deficiencies.</p>
+</body>
+</html>

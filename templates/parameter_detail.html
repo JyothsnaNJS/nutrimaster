@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parameter Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="banner">
+        <div class="logo">
+			<img src="{{ url_for('static', filename='logo4.png') }}" alt="Business Logo" class="logo-image">
+            <h1>NutriZap</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="back-button-container">
+        <a href="/" class="back-button">Back</a>
+    </div>
+
+    <div class="container">
+        <h2>{{ general_name }}</h2>  <!-- Parameter name as a heading -->
+        <h3>Causes</h3>
+        <ul>
+            {% for cause in causes %}
+            <li>{{ cause }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Effects</h3>
+        <ul>
+            {% for effect in effects %}
+            <li>{{ effect }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>How to Avoid</h3>
+        <ul>
+            {% for avoid in avoids %}
+            <li>{{ avoid }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <footer>
+        <p>© 2024 Health Analyzer. All rights reserved.</p>
+    </footer>
+</body>
+</html>

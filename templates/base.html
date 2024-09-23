@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="banner">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Business Logo" class="logo-image">
+            <h1>NutriZap</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="about-link">About</a></li>
+                <li><a href="#" class="contact-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>© 2024 NutriZap. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Flask==2.1.2
+pdfplumber==0.5.28
+pandas==1.4.2
+gunicorn==20.1.0
+openpyxl==3.0.9

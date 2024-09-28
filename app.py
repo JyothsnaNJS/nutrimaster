@@ -4,6 +4,9 @@ import pdfplumber
 import os
 import re
 
+
+
+
 app = Flask(__name__)
 
 # Set secret key for session management
@@ -225,5 +228,11 @@ def index():
 def response_page():
     return render_template('response.html')
 
+#if __name__ == '__main__':
+#    app.run(debug=True)
+    
+# Other imports and code...
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))  # Get the port from environment, default to 5000
+    app.run(host='0.0.0.0', port=port)        # Bind to 0.0.0.0 and the port number

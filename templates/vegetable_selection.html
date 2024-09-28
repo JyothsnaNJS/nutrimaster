@@ -9,16 +9,25 @@
 <body>
     <h1>Select Foods for Your Nutrient Deficiencies</h1>
 
+    <!-- Display User Information -->
+    <div>
+        <p><strong>User Information:</strong> Age: {{ user_info.age }}, Gender: {{ user_info.gender }}, Weight: {{ user_info.weight }} kg, Activity Level: {{ user_info.activity_level }}</p>
+    </div>
+
     <form method="POST" action="/submit_food_plan">
         <h2>Compulsory Foods</h2>
 
         {% for nutrient, foods in compulsory_vegetables.items() %}
-            <h3>{{ nutrient }}</h3>
+            <!-- Display nutrient and RDA value based on user info -->
+            <h3>{{ nutrient }} - RDA: {{ rda_values[nutrient] }} per day</h3>
             <ul>
                 {% for food in foods %}
                 <li>
-                    <input type="checkbox" name="vegetables" value="{{ food }}" id="{{ food }}">
-                    <label for="{{ food }}">{{ food }}</label>
+                    <!-- Display food, nutrient value, and unit -->
+                    <input type="checkbox" name="vegetables" value="{{ food['food_name'] }}" id="{{ food['food_name'] }}">
+                    <label for="{{ food['food_name'] }}">
+                        {{ food['food_name'] }} ({{ food['nutrient_value'] }} {{ food['nutrient_unit'] }})
+                    </label>
                 </li>
                 {% endfor %}
             </ul>

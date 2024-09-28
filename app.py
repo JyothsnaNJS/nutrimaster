@@ -122,35 +122,69 @@ def check_parameters(extracted_data):
     print("Final Deficiencies List:", deficiencies)
     return flagged_params, deficiencies
 
+# Load the RDA sheet from the Excel file
+rda_df = pd.read_excel('nutrients.xlsx', sheet_name='RDA')
 
 # Vegetable selection route
-@app.route('/vegetable_selection')
+@app.route('/vegetable_selection', methods=['POST'])
 def vegetable_selection():
+    # Retrieve user info from form submission
+    age = int(request.form.get('age'))
+    gender = request.form.get('gender')
+    weight = float(request.form.get('weight'))
+    activity_level = request.form.get('activity-level')
+
+    # Store user info in session for future use
+    session['user_info'] = {
+        'age': age,
+        'gender': gender,
+        'weight': weight,
+        'activity_level': activity_level
+    }
+
     # Get deficiencies from session
     deficiencies = session.get('deficiencies')
     
     if not deficiencies:
         return redirect(url_for('index'))  # Redirect if deficiencies are not found
 
-    print("Deficiencies from session:", deficiencies)  # Debugging print to check if deficiencies are passed correctly
+    print("Deficiencies from session:", deficiencies)
 
     # Get recommended foods based on deficiencies from food-nutrient mapping
     recommended_foods = food_nutrient_mapping_df[food_nutrient_mapping_df['nutrient'].isin(deficiencies)]
 
+    # Calculate RDA values for each nutrient based on user info
+    rda_values = {}
+    for nutrient in deficiencies:
+        rda_values[nutrient] = get_rda_value(nutrient, age, gender, activity_level)
+
     # Categorize compulsory and normal vegetables
     compulsory_vegetables = {}
-    normal_vegetables = []
-
     for nutrient in deficiencies:
-        nutrient_foods = recommended_foods[recommended_foods['nutrient'] == nutrient]['food_name'].tolist()
+        nutrient_foods = recommended_foods[recommended_foods['nutrient'] == nutrient][['food_name', 'nutrient_value', 'nutrient_unit']].to_dict(orient='records')
         compulsory_vegetables[nutrient] = nutrient_foods
-    
-    print("Compulsory Vegetables:", compulsory_vegetables)
 
     return render_template('vegetable_selection.html', 
                            compulsory_vegetables=compulsory_vegetables, 
-                           normal_vegetables=normal_vegetables, 
-                           deficiencies=deficiencies)
+                           rda_values=rda_values,
+                           user_info=session['user_info'])
+
+
+
+def get_rda_value(nutrient, age, gender, activity_level):
+    rda_filtered = rda_df[
+        (rda_df['nutrient'].str.lower() == nutrient.lower()) &
+        (rda_df['min_age'] <= int(age)) & 
+        (rda_df['max_age'] >= int(age)) &
+        (rda_df['gender'].str.lower() == gender.lower()) &
+        (rda_df['activity_level'].str.lower() == activity_level.lower())
+    ]
+    
+    if not rda_filtered.empty:
+        return rda_filtered.iloc[0]['rda_value']
+    else:
+        return "RDA not available"
+
 
 
 # Route for food plan generation and session clearing

@@ -7,7 +7,8 @@
 
     <!-- Form to manually enter Age, Gender, Weight, and Activity Level -->
     <div class="user-info-form">
-        <form method="POST" action="#">
+        <!-- Combine the form with the "Start Making Food Plan" button -->
+        <form method="POST" action="/vegetable_selection">
             <label for="age">Age:</label>
             <input type="number" id="age" name="age" placeholder="Enter your age" required><br>
 
@@ -30,13 +31,11 @@
                 <option value="Very Active">Very Active</option>
             </select><br>
 
-            <input type="submit" value="Submit Info">
+            <!-- Button to start making the food plan (this will submit the form) -->
+            <div class="start-food-plan-container">
+                <button type="submit" class="round-button">Start Making Food Plan</button>
+            </div>
         </form>
-    </div>
-
-    <!-- Button to start making the food plan -->
-    <div class="start-food-plan-container">
-        <a href="/vegetable_selection" class="round-button">Start Making Food Plan</a>
     </div>
 
     <!-- Flexbox container to hold the table and parameter details side by side -->

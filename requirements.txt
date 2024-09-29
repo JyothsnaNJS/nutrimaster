@@ -4,3 +4,4 @@ gunicorn
 pdfplumber==0.5.28
 pandas==1.4.2
 openpyxl==3.0.9
+numpy

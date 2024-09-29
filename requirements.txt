@@ -6,7 +6,5 @@ gunicorn==20.1.0
 openpyxl==3.0.9
 openpyxl==3.0.9
 numpy==2.1.1
-openpyxl==3.1.5
-openssl==3.0.15
 pandas==2.2.2
 pip==24.2

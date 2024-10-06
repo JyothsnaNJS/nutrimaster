@@ -17,10 +17,11 @@ names_units_df = pd.read_excel('parameters.xlsx', sheet_name='main_table')
 alt_names_df = pd.read_excel('parameters.xlsx', sheet_name='alt_name_table')
 ranges_df = pd.read_excel('parameters.xlsx', sheet_name='param_table')
 master_cea_df = pd.read_excel('parameters.xlsx', sheet_name='master_cea')
-nutrients_table_df = pd.read_excel('nutrients.xlsx', sheet_name='nutrients_def_mapping')
 
 # Load food-nutrient mapping from the Excel sheet
+nutrients_table_df = pd.read_excel('nutrients.xlsx', sheet_name='nutrients_def_mapping')
 food_nutrient_mapping_df = pd.read_excel('nutrients.xlsx', sheet_name='food_nutrients_mapping')
+rda_df = pd.read_excel('nutrients.xlsx', sheet_name='RDA')
 
 # Ensure uploads folder exists
 if not os.path.exists('uploads'):
@@ -125,8 +126,7 @@ def check_parameters(extracted_data):
     print("Final Deficiencies List:", deficiencies)
     return flagged_params, deficiencies
 
-# Load the RDA sheet from the Excel file
-rda_df = pd.read_excel('nutrients.xlsx', sheet_name='RDA')
+
 
 # Vegetable selection route
 @app.route('/vegetable_selection', methods=['POST'])

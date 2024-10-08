@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
 import pdfplumber
 import os
 import re
-
+import io
+from io import BytesIO
+import base64
 
 
 
@@ -21,6 +25,7 @@ master_cea_df = pd.read_excel('parameters.xlsx', sheet_name='master_cea')
 # Load food-nutrient mapping from the Excel sheet
 nutrients_table_df = pd.read_excel('nutrients.xlsx', sheet_name='nutrients_def_mapping')
 food_nutrient_mapping_df = pd.read_excel('nutrients.xlsx', sheet_name='food_nutrients_mapping')
+nutri_tree_df = pd.read_excel('nutrients.xlsx', sheet_name='nutri_tree_dependencies')
 rda_df = pd.read_excel('nutrients.xlsx', sheet_name='RDA')
 
 # Ensure uploads folder exists
@@ -89,6 +94,7 @@ def upload_file():
         print(f"Error processing file upload: {e}")
         return jsonify({'error': f'An error occurred during file processing: {str(e)}'}), 500
 
+
 # Compare extracted data with Excel data
 def check_parameters(extracted_data):
     flagged_params = []
@@ -128,6 +134,62 @@ def check_parameters(extracted_data):
 
 
 
+
+
+
+def generate_tree_graph(deficiencies, parameter):
+    print("Generating tree graph with the following data:")
+    print(deficiencies)
+
+    G = nx.DiGraph()
+
+    # Add the parameter as the root node
+    G.add_node(parameter)
+
+    for nutrient in deficiencies:
+        # Fetch the nutrient dependencies from the nutri_tree_df
+        dependency_tree = nutri_tree_df[nutri_tree_df['child_nutrient'].str.lower() == nutrient.lower()].to_dict('records')
+
+        if not dependency_tree:
+            # If there are no dependencies, connect the nutrient to the root node
+            G.add_edge(parameter, nutrient)
+        else:
+            for item in dependency_tree:
+                parent = item['parent_nutrient']
+                child = item['child_nutrient']
+
+                # Add the parent-child relationship to the graph
+                if parent and parent != 'None':
+                    G.add_edge(parent, child)
+                else:
+                    G.add_edge(parameter, child)  # Connect to the parameter root node if no parent
+
+    pos = nx.spring_layout(G)
+    plt.figure(figsize=(8, 6))
+    nx.draw(G, pos, with_labels=True, node_size=3000, node_color="lightblue", font_size=10, font_weight="bold", arrows=True)
+    plt.title(f"Nutrient Deficiency Dependency Tree for {parameter}")
+
+    # Save the image in a buffer and encode it to base64
+    img_buffer = BytesIO()
+    plt.savefig(img_buffer, format='png')
+    img_buffer.seek(0)
+    graph_img = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+    img_buffer.close()
+    plt.close()
+
+    return graph_img
+
+
+
+# Example usage:
+# Pass the dependency_tree as a list of dictionaries as done in previous code
+# dependency_tree = [
+#     {'parent_nutrient': 'Iron', 'child_nutrient': 'Hemoglobin', ...},
+#     {'parent_nutrient': 'Folate', 'child_nutrient': 'Hemoglobin', ...},
+# ]
+# graph_img = generate_tree_graph(dependency_tree)
+
+
 # Vegetable selection route
 @app.route('/vegetable_selection', methods=['POST'])
 def vegetable_selection():
@@ -153,6 +215,10 @@ def vegetable_selection():
 
     print("Deficiencies from session:", deficiencies)
 
+    # Find deeper nutrient dependencies from nutri_tree_df
+    # Load dependencies using parent_nutrient and child_nutrient
+    dependency_tree = nutri_tree_df[nutri_tree_df['parent_nutrient'].isin(deficiencies)].to_dict('records')
+
     # Get recommended foods based on deficiencies from food-nutrient mapping
     recommended_foods = food_nutrient_mapping_df[food_nutrient_mapping_df['nutrient'].isin(deficiencies)]
 
@@ -170,7 +236,9 @@ def vegetable_selection():
     return render_template('vegetable_selection.html', 
                            compulsory_vegetables=compulsory_vegetables, 
                            rda_values=rda_values,
-                           user_info=session['user_info'])
+                           user_info=session['user_info'],
+                           dependency_tree=dependency_tree)  # Pass the dependency tree
+
 
 
 
@@ -187,7 +255,6 @@ def get_rda_value(nutrient, age, gender, activity_level):
         return rda_filtered.iloc[0]['rda_value']
     else:
         return "RDA not available"
-
 
 
 # Route for food plan generation and session clearing
@@ -220,18 +287,75 @@ def get_parameter_details(general_name):
     })
 
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+    
+# Function to retrieve deeper nutrient dependencies from the nutri_tree_df
+def get_deeper_nutrients(nutrient):
+    dependencies = nutri_tree_df[nutri_tree_df['parent_nutrient'].str.lower() == nutrient.lower()]
+    deeper_nutrients = []
+    
+    for _, row in dependencies.iterrows():
+        deeper_nutrients.append({
+            'nutrient': row['child_nutrient'],
+            'relation_type': row['relation_type'],
+            'comments': row['comments'],
+            'body_signs': row['body_signs']
+        })
+    return deeper_nutrients
 
-@app.route('/response')
+@app.route('/response', methods=['GET'])
 def response_page():
-    return render_template('response.html')
+    deficiencies = session.get('deficiencies')
+    parameter_name = session.get('parameter_name', 'Unknown Parameter')
+
+    if not deficiencies:
+        return render_template('response.html', text_representation="No deficiencies found.")
+
+    # Generate text representation of the deficiencies and their dependencies
+    text_representation = f"Nutrient Deficiency Dependencies for {parameter_name}:\n\n"
+
+    for nutrient in deficiencies:
+        text_representation += f"{nutrient}\n"
+        # Fetch deeper nutrients using nutrient dependency mapping
+        deeper_nutrients = get_deeper_nutrients(nutrient)
+
+        if deeper_nutrients:
+            for deeper in deeper_nutrients:
+                text_representation += f"    → {deeper['nutrient']}\n"
+        else:
+            text_representation += "    No deeper dependencies.\n"
+
+    # Generate tree graph image for deficiencies
+    graph_img = generate_tree_graph(deficiencies, parameter_name)
+
+    return render_template('response.html', text_representation=text_representation, graph_img=graph_img)
+
+
+# Ensure generate_graph function is defined and works properly
+def generate_text_representation(deficiencies, parameter_name):
+    text_representation = f"{parameter_name}\n"
+    
+    for nutrient in deficiencies:
+        text_representation += f"  → {nutrient}\n"
+        deeper_nutrients = get_deeper_nutrients(nutrient)
+        for deeper in deeper_nutrients:
+            text_representation += f"    → {deeper['nutrient']}\n"
+    print(f"Deficiencies List: {deficiencies}")
+
+
+    return text_representation
+
+
 
 #if __name__ == '__main__':
 #    app.run(debug=True)
     
 # Other imports and code...
+
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Get the port from environment, default to 5000

@@ -7,7 +7,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Select Foods for Your Nutrient Deficiencies</h1>
+    <h3>Nutrient Dependency Tree</h3>
+	<ul>
+		{% for item in dependency_tree %}
+			<li>{{ item.parent_nutrient }} → {{ item.child_nutrient }} ({{ item.relation_type }})</li>
+		{% endfor %}
+	</ul>
+
+
 
     <!-- Display User Information -->
     <div>

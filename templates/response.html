@@ -7,7 +7,6 @@
 
     <!-- Form to manually enter Age, Gender, Weight, and Activity Level -->
     <div class="user-info-form">
-        <!-- Combine the form with the "Start Making Food Plan" button -->
         <form method="POST" action="/vegetable_selection">
             <label for="age">Age:</label>
             <input type="number" id="age" name="age" placeholder="Enter your age" required><br>
@@ -31,7 +30,6 @@
                 <option value="Very Active">Very Active</option>
             </select><br>
 
-            <!-- Button to start making the food plan (this will submit the form) -->
             <div class="start-food-plan-container">
                 <button type="submit" class="round-button">Start Making Food Plan</button>
             </div>
@@ -40,7 +38,6 @@
 
     <!-- Flexbox container to hold the table and parameter details side by side -->
     <div class="results-container">
-        <!-- Parameter Table -->
         <div id="results" class="results-table">
             <!-- The parameters table will be dynamically updated by script.js -->
         </div>
@@ -48,6 +45,25 @@
         <!-- Parameter Details Section -->
         <div id="parameter-details" class="parameter-details">
             <h3 id="parameter-name-heading">Hover over a parameter to see details</h3>
+
+            <!-- Dynamic Nutrient Deficiency Dependency Graph -->
+            <div class="dependency-tree">
+                <h2>Nutrient Deficiency Dependencies</h2>
+                {% if text_representation %}
+                    <pre>{{ text_representation }}</pre>
+                {% else %}
+                    <p>No data available.</p>
+                {% endif %}
+            </div>
+
+            <div class="dependency-tree">
+                {% if graph_img %}
+                    <img src="data:image/png;base64,{{ graph_img }}" alt="Nutrient Dependency Graph">
+                {% else %}
+                    <p>No graph available.</p>
+                {% endif %}
+            </div>
+
             <div>
                 <h4>Causes</h4>
                 <ul id="causes-list"></ul>

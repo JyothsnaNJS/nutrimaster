@@ -123,6 +123,16 @@ footer {
     margin-bottom: 0;
 }
 
+.dependency-tree {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.dependency-tree img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* Vegetable selection page */
 .vegetable-list {
     display: flex;

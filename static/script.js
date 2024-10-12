@@ -26,7 +26,6 @@ window.onload = function() {
     }
 }
 
-
 function showParameterDetails(parameter) {
     // Set the parameter name heading dynamically
     const parameterNameHeading = document.getElementById('parameter-name-heading');
@@ -95,3 +94,48 @@ function validateSelection() {
     return true; // Allow form submission
 }
 
+function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const fileStatus = document.getElementById('fileStatus');
+
+    if (!file) {
+        alert('Please select a file to upload.');
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        alert('File size exceeds 5MB limit. Please upload a smaller file.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Display file name and upload status
+    fileStatus.innerHTML = `<p>Uploading: ${file.name}</p>`;
+
+    fetch('/upload', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        // Check if the response is in JSON format
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.indexOf('application/json') !== -1) {
+            return response.json();
+        } else {
+            return response.text().then(text => {
+                throw new Error(`Unexpected response: ${text}`);
+            });
+        }
+    })
+    .then(data => {
+        localStorage.setItem('comparisonResults', JSON.stringify(data));
+        window.location.href = '/response';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        fileStatus.innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
+    });
+}

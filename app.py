@@ -253,7 +253,10 @@ def vegetable_selection():
 
     # Get deficiencies from session
     deficiencies = session.get('deficiencies')
-    
+    #added by jyothsna
+    parameters_data = session.get('parameters_data')
+    parameter_deficiencies = session.get('parameter_deficiencies')
+    #### end of code added by jyothsna
     if not deficiencies:
         return redirect(url_for('index'))  # Redirect if deficiencies are not found
 
@@ -276,12 +279,27 @@ def vegetable_selection():
     for nutrient in deficiencies:
         nutrient_foods = recommended_foods[recommended_foods['nutrient'] == nutrient][['food_name', 'nutrient_value', 'nutrient_unit']].to_dict(orient='records')
         compulsory_vegetables[nutrient] = nutrient_foods
+        
+    # Generate Text Representation for Nutrient Deficiencies
+    text_representation = "Nutrient Deficiency Dependencies:\n\n"
+    for parameter, nutrients in parameter_deficiencies.items():
+        text_representation += f"\nParameter: {parameter}\n"
+        for nutrient in nutrients:
+            text_representation += f"  → {nutrient}\n"
+            deeper_nutrients = get_deeper_nutrients(nutrient)
+            for deeper in deeper_nutrients:
+                text_representation += f"    → {deeper['nutrient']}\n"
+
+    # Generate Deficiency Graph Image
+    graph_img = generate_tree_graph(parameter_deficiencies)
 
     return render_template('vegetable_selection.html', 
                            compulsory_vegetables=compulsory_vegetables, 
                            rda_values=rda_values,
                            user_info=session['user_info'],
-                           dependency_tree=dependency_tree)  # Pass the dependency tree
+                           dependency_tree=dependency_tree,
+                           text_representation=text_representation,  # Pass the text representation
+                           graph_img=graph_img)  # Pass the dependency tree
 
 
 

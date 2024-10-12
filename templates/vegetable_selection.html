@@ -20,6 +20,21 @@
     <div>
         <p><strong>User Information:</strong> Age: {{ user_info.age }}, Gender: {{ user_info.gender }}, Weight: {{ user_info.weight }} kg, Activity Level: {{ user_info.activity_level }}</p>
     </div>
+	<!-- Display Text Representation for Nutrient Deficiencies -->
+    <div class="text-representation">
+        <h2>Nutrient Deficiency Dependencies</h2>
+        <pre>{{ text_representation }}</pre>
+    </div>
+
+    <!-- Display Nutrient Deficiency Graph -->
+    <div class="graph-representation">
+        <h2>Graph Representation</h2>
+        {% if graph_img %}
+            <img src="data:image/png;base64,{{ graph_img }}" alt="Nutrient Dependency Graph">
+        {% else %}
+            <p>No graph available.</p>
+        {% endif %}
+    </div>
 
     <form method="POST" action="/submit_food_plan">
         <h2>Compulsory Foods</h2>

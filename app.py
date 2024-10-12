@@ -237,6 +237,7 @@ def generate_tree_graph(parameter_deficiencies):
 # Vegetable selection route
 @app.route('/vegetable_selection', methods=['POST'])
 def vegetable_selection():
+    print("Session Data:", session)  # Debug session dat
     # Retrieve user info from form submission
     age = int(request.form.get('age'))
     gender = request.form.get('gender')
